@@ -60,7 +60,7 @@ export const App = () => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
+    <div id='ui-container'>
       <SelectedPathContext.Provider value={{ selectedPath, switchSelectedPath }}>
         <FlightPathsContext.Provider value={{ flightPaths, setFlightPaths, deleteFlightpath }}>
           <FlightPathsPanel />

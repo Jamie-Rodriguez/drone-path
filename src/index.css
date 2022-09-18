@@ -7,6 +7,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Root-level container that controls Flexbox for Flightpath Panel and Map */
+#ui-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
 #flight-paths-panel {
   min-width: 20rem;
   overflow: scroll;
