@@ -1,6 +1,4 @@
 import { createContext, useState } from 'react'
-import { MapContainer, TileLayer, Marker, Polyline, Popup } from 'react-leaflet'
-import { IoTrashSharp } from 'react-icons/io5'
 // Import Leaflet's stylesheet
 // Throws warning:
 //   autoprefixer: Replace color-adjust to print-color-adjust. The color-adjust shorthand is currently deprecated.
@@ -12,7 +10,7 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'
 import 'leaflet-defaulticon-compatibility'
 import FlightPathsPanel from './FlightPathsPanel'
-import AttachCallbackToMapClick from './AddMarkerOnClick'
+import Map from './Map'
 
 const initialFlightPaths = []
 export const FlightPathsContext = createContext(initialFlightPaths)
@@ -69,30 +67,10 @@ export const App = () => {
         </FlightPathsContext.Provider>
       </SelectedPathContext.Provider>
 
-      {/* The Map component must be supplied non-percentage height/width! */}
-      <MapContainer center={center}
-                    zoom={13}
-                    scrollWheelZoom={false}
-                    onClick={ event => console.log('clicked!', event) }
-                    style={{ height: '40rem', width: '40rem' }}>
-        <TileLayer
-          attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-          url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-        />
-        <AttachCallbackToMapClick callback={addWaypoint} />
-        {waypoints.map((p, i) => (
-          <Marker key={i} position={p}>
-            <Popup>
-              <div style={{ textAlign: 'center' }}>
-                <button type='button' onClick={ () => deleteWaypoint(i) }>
-                  <IoTrashSharp />
-                </button>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-        <Polyline positions={waypoints} pathOptions={{ color: 'red' }}/>
-      </MapContainer>
+      <Map center={ center }
+           waypoints={ waypoints }
+           addWaypoint={ addWaypoint }
+           deleteWaypoint={ deleteWaypoint } />
     </div>
   )
 }
