@@ -9,8 +9,8 @@ import 'leaflet/dist/leaflet.css'
 // See https://github.com/Leaflet/Leaflet/issues/4968
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css'
 import 'leaflet-defaulticon-compatibility'
-import FlightPathsPanel from './FlightPathsPanel'
-import Map from './Map'
+import FlightPathsPanel from './components/FlightPathsPanel'
+import Map from './components/Map'
 
 const initialFlightPaths = []
 export const FlightPathsContext = createContext(initialFlightPaths)

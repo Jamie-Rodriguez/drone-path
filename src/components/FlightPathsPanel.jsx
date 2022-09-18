@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 import { FaCog } from 'react-icons/fa'
 import { IoTrashSharp } from 'react-icons/io5'
-import { FlightPathsContext, SelectedPathContext } from './App'
+import { FlightPathsContext, SelectedPathContext } from '../App'
 
 const FlightPathsPanel = () => {
   const { flightPaths, setFlightPaths, deleteFlightpath } = useContext(FlightPathsContext)
