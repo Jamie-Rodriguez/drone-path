@@ -4,7 +4,7 @@ import { FaCog } from 'react-icons/fa'
 import { IoTrashSharp } from 'react-icons/io5'
 import { FlightPathsContext, SelectedPathContext } from '../App'
 
-const FlightPathsPanel = ({ saveWaypointsToFlightPath }) => {
+const FlightPathsPanel = ({ saveWaypointsToFlightPath, currentFlightPathDirty }) => {
   const { flightPaths, setFlightPaths, deleteFlightpath } = useContext(FlightPathsContext)
   const { selectedPath, switchSelectedPath } = useContext(SelectedPathContext)
   // If we are currently editing a flight path name
@@ -71,7 +71,9 @@ const FlightPathsPanel = ({ saveWaypointsToFlightPath }) => {
           }
           <span>
             {i === selectedPath ? <RiSave3Fill onClick={() => saveWaypointsToFlightPath() }
-                                               style={{ marginRight: '1rem' }} /> : null }
+                                               style={{ marginRight: '1rem',
+                                                        color: currentFlightPathDirty() ? 'red' : 'black' }} />
+                                : null }
             <IoTrashSharp onClick={ () => deleteFlightpath(i) }
                           style={{ marginRight: '1rem' }}/>
             <FaCog onClick={ () => setEditing(i) }
