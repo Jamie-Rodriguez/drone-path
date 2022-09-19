@@ -45,13 +45,15 @@ export const App = () => {
     setWaypoints(waypoints.filter((p, i) => i !== index))
   }
 
-  const switchSelectedPath = newIndex => {
+  const saveWaypointsToFlightPath = () => {
     if (selectedPath !== undefined) {
       setFlightPaths(flightPaths.map(
         (fp, i) => i === selectedPath ? { name: fp.name, path: waypoints } : fp)
       )
     }
+  }
 
+  const switchSelectedPath = newIndex => {
     setSelectedPath(newIndex)
     setWaypoints(flightPaths[newIndex].path)
   }
@@ -68,7 +70,7 @@ export const App = () => {
     <div id='ui-container'>
       <SelectedPathContext.Provider value={{ selectedPath, switchSelectedPath }}>
         <FlightPathsContext.Provider value={{ flightPaths, setFlightPaths, deleteFlightpath }}>
-          <FlightPathsPanel />
+          <FlightPathsPanel saveWaypointsToFlightPath={ saveWaypointsToFlightPath } />
         </FlightPathsContext.Provider>
       </SelectedPathContext.Provider>
 
