@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
 // Import Leaflet's stylesheet
 // Throws warning:
 //   autoprefixer: Replace color-adjust to print-color-adjust. The color-adjust shorthand is currently deprecated.
@@ -12,7 +12,7 @@ import 'leaflet-defaulticon-compatibility'
 import FlightPathsPanel from './components/FlightPathsPanel'
 import Map from './components/Map'
 
-const initialFlightPaths = []
+const initialFlightPaths = JSON.parse(localStorage.getItem('drone-path-app-flight-paths')) || []
 export const FlightPathsContext = createContext(initialFlightPaths)
 
 const initialSelectedPath = undefined
@@ -22,10 +22,15 @@ export const App = () => {
   const [ flightPaths, setFlightPaths ] = useState(initialFlightPaths)
   const [ selectedPath, setSelectedPath ] = useState(initialSelectedPath)
   const [ waypoints, setWaypoints ] = useState([])
+
   const center = {
     lat: 43.31,
     lng: -1.98,
   }
+
+  useEffect(() => {
+    localStorage.setItem('drone-path-app-flight-paths', JSON.stringify(flightPaths))
+  }, [flightPaths])
 
   const addWaypoint = event => {
     if (selectedPath === undefined) {
