@@ -1,10 +1,10 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { RiSave3Fill } from 'react-icons/ri'
 import { FaCog } from 'react-icons/fa'
 import { IoTrashSharp } from 'react-icons/io5'
 import { FlightPathsContext, SelectedPathContext } from '../App'
 
-const FlightPathsPanel = ({ saveWaypointsToFlightPath, currentFlightPathDirty }) => {
+const FlightPathsPanel = ({ center, zoom, saveWaypointsToFlightPath, currentFlightPathDirty }) => {
   const { flightPaths, setFlightPaths, deleteFlightpath } = useContext(FlightPathsContext)
   const { selectedPath, switchSelectedPath } = useContext(SelectedPathContext)
   // If we are currently editing a flight path name
@@ -21,18 +21,21 @@ const FlightPathsPanel = ({ saveWaypointsToFlightPath, currentFlightPathDirty })
       newPathName = `New Path (${count})`
     }
 
-    setFlightPaths([ ...flightPaths, { name: newPathName, path: [] } ])
-    // React batches these state updates together!
-    // We can't just do:
-    //     switchSelectedPath(flightPaths[flightPaths.length - 1])
-    // When calling switchSelectedPath(), because of React's batching
-    // 'flightPaths' won't be up to date with the new path added at this point
-    // So this is kind of a hack; we know we are only adding one new path ahead
-    // of time and we know where it will be (the end of the list)
-    // Alternatives are forcing a re-render after call to setFlightPaths()
-    // using flushSync(), but is heavy-handed compared to just doing this lol
-    switchSelectedPath(flightPaths.length)
+    setFlightPaths([
+      ...flightPaths,
+      {
+        name: newPathName,
+        center,
+        zoom,
+        path: []
+      }
+    ])
   }
+
+  // Once we've added/deleted a flight path, go to the last item
+  useEffect(() => {
+    switchSelectedPath(flightPaths.length - 1)
+  }, [flightPaths.length])
 
   const handleKeyDownAndBlur = event => {
     if (event.key === 'Enter' || event.type === 'blur') {
@@ -42,8 +45,8 @@ const FlightPathsPanel = ({ saveWaypointsToFlightPath, currentFlightPathDirty })
         return
       }
 
-      setFlightPaths(flightPaths.map((p, i) =>
-        i === editing ? { name: event.target.value, path: p.path } : p
+      setFlightPaths(flightPaths.map((fp, i) =>
+        i === editing ? { ...fp, name: event.target.value } : fp
       ))
     }
   }

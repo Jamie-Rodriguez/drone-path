@@ -22,11 +22,22 @@ export const App = () => {
   const [ flightPaths, setFlightPaths ] = useState(initialFlightPaths)
   const [ selectedPath, setSelectedPath ] = useState(initialSelectedPath)
   const [ waypoints, setWaypoints ] = useState([])
-
-  const center = {
-    lat: 43.31,
-    lng: -1.98,
-  }
+  // The state of the current center/zoom on the map
+  const [ currentCenter, setCurrentCenter ] = useState(
+    {
+      lat: 43.31,
+      lng: -1.98
+    })
+  const [ currentZoom, setCurrentZoom ] = useState(13)
+  // These are updated when we wish to pan the map to the new coordinates
+  // i.e. when selecting a new flight path that is in a different place,
+  // we should pan to it automatically.
+  const [ panToCenter, setPanToCenter ] = useState(
+    {
+      lat: 43.31,
+      lng: -1.98
+    })
+  const [ panToZoom, setPanToZoom ] = useState(13)
 
   useEffect(() => {
     localStorage.setItem('drone-path-app-flight-paths', JSON.stringify(flightPaths))
@@ -48,7 +59,7 @@ export const App = () => {
   const saveWaypointsToFlightPath = () => {
     if (selectedPath !== undefined) {
       setFlightPaths(flightPaths.map(
-        (fp, i) => i === selectedPath ? { name: fp.name, path: waypoints } : fp)
+        (fp, i) => i === selectedPath ? { ...fp, center: currentCenter, zoom: currentZoom, path: waypoints } : fp)
       )
     }
   }
@@ -70,6 +81,8 @@ export const App = () => {
   const switchSelectedPath = newIndex => {
     setSelectedPath(newIndex)
     setWaypoints(flightPaths[newIndex].path)
+    setPanToCenter(flightPaths[newIndex].center)
+    setPanToZoom(flightPaths[newIndex].zoom)
   }
 
   const deleteFlightpath = index => {
@@ -84,15 +97,21 @@ export const App = () => {
     <div id='ui-container'>
       <SelectedPathContext.Provider value={{ selectedPath, switchSelectedPath }}>
         <FlightPathsContext.Provider value={{ flightPaths, setFlightPaths, deleteFlightpath }}>
-          <FlightPathsPanel saveWaypointsToFlightPath={ saveWaypointsToFlightPath }
+          <FlightPathsPanel center={ currentCenter }
+                            zoom={ currentZoom }
+                            saveWaypointsToFlightPath={ saveWaypointsToFlightPath }
                             currentFlightPathDirty={ currentFlightPathDirty } />
         </FlightPathsContext.Provider>
       </SelectedPathContext.Provider>
 
-      <Map center={ center }
+      <Map panToCenter={ panToCenter }
+           panToZoom={ panToZoom }
            waypoints={ waypoints }
            addWaypoint={ addWaypoint }
-           deleteWaypoint={ deleteWaypoint } />
+           deleteWaypoint={ deleteWaypoint }
+           moveEnd={ setCurrentCenter }
+           zoomEnd={ setCurrentZoom }
+           />
     </div>
   )
 }
