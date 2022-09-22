@@ -42,3 +42,11 @@ body {
   flex-wrap: wrap;
   justify-content: space-between;
 }
+
+.leaflet-marker-icon:first-of-type {
+  filter: hue-rotate(265deg)
+}
+
+.leaflet-marker-icon:last-of-type {
+  filter: hue-rotate(140deg)
+}
