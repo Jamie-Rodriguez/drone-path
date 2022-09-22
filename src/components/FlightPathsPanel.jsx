@@ -1,36 +1,17 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { RiSave3Fill } from 'react-icons/ri'
 import { FaCog } from 'react-icons/fa'
 import { IoTrashSharp } from 'react-icons/io5'
-import { FlightPathsContext, SelectedPathContext } from '../App'
 
-const FlightPathsPanel = ({ center, zoom, saveWaypointsToFlightPath, currentFlightPathDirty }) => {
-  const { flightPaths, setFlightPaths, deleteFlightpath } = useContext(FlightPathsContext)
-  const { selectedPath, switchSelectedPath } = useContext(SelectedPathContext)
+const FlightPathsPanel = ({ center,
+                            zoom,
+                            flightPaths,
+                            selectedPath,
+                            dispatch,
+                            currentFlightPathDirty,
+                            switchSelectedPath }) => {
   // If we are currently editing a flight path name
   const [ editing, setEditing ] = useState(undefined)
-
-  const names = flightPaths.map(p => p.name)
-
-  const createNewFlightPath = () => {
-    let newPathName = 'New Path'
-    let count = 0
-
-    while (names.includes(newPathName)) {
-      count++
-      newPathName = `New Path (${count})`
-    }
-
-    setFlightPaths([
-      ...flightPaths,
-      {
-        name: newPathName,
-        center,
-        zoom,
-        path: []
-      }
-    ])
-  }
 
   // Once we've added/deleted a flight path, go to the last item
   useEffect(() => {
@@ -41,13 +22,13 @@ const FlightPathsPanel = ({ center, zoom, saveWaypointsToFlightPath, currentFlig
     if (event.key === 'Enter' || event.type === 'blur') {
       setEditing(undefined)
 
+      const names = flightPaths.map(p => p.name)
+
       if (names.includes(event.target.value)) {
         return
       }
 
-      setFlightPaths(flightPaths.map((fp, i) =>
-        i === editing ? { ...fp, name: event.target.value } : fp
-      ))
+      dispatch({ type: 'RENAME_FLIGHT_PATH', editing, name: event.target.value })
     }
   }
 
@@ -56,7 +37,9 @@ const FlightPathsPanel = ({ center, zoom, saveWaypointsToFlightPath, currentFlig
       <div id='flight-paths-header'>
         <h1 style={{ display: 'inline' }}>Flight Paths</h1>
         <button type='button'
-                onClick={ createNewFlightPath }
+                onClick={ () => dispatch({ type: 'NEW_FLIGHT_PATH',
+                                           center,
+                                           zoom }) }
                 style={{ marginLeft: '0.5rem' }}>+</button>
       </div>
       {flightPaths.map((p, i) =>
@@ -73,11 +56,16 @@ const FlightPathsPanel = ({ center, zoom, saveWaypointsToFlightPath, currentFlig
               </span>
           }
           <span>
-            {i === selectedPath ? <RiSave3Fill onClick={() => saveWaypointsToFlightPath() }
+            {i === selectedPath ? <RiSave3Fill onClick={() => dispatch({ type: 'SAVE_WAYPOINTS',
+                                                                         center,
+                                                                         zoom }) }
                                                style={{ marginRight: '1rem',
-                                                        color: currentFlightPathDirty() ? 'red' : 'black' }} />
+                                                        color: currentFlightPathDirty() ? 'red'
+                                                                                        : 'black'
+                                                       }} />
                                 : null }
-            <IoTrashSharp onClick={ () => deleteFlightpath(i) }
+            <IoTrashSharp onClick={ () => dispatch({ type: 'DELETE_FLIGHT_PATH',
+                                                     index: i }) }
                           style={{ marginRight: '1rem' }}/>
             <FaCog onClick={ () => setEditing(i) }
                    style={{ marginRight: '1rem' }}/>

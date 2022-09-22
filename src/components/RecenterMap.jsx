@@ -2,13 +2,13 @@ import { useEffect } from 'react'
 import { useMap } from 'react-leaflet'
 
 const RecenterMap = ({ center, zoom }) => {
-    const map = useMap()
+  const map = useMap()
 
-    useEffect(() => {
-        map.setView(center, zoom)
-    }, [center, zoom])
+  useEffect(() => {
+    map.setView(center, zoom)
+  }, [center, zoom, map])
 
-    return null
+  return null
 }
 
 export default RecenterMap
