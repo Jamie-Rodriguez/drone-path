@@ -1,12 +1,12 @@
-import { MapContainer, TileLayer, Marker, Polyline, Popup } from 'react-leaflet'
-import { IoTrashSharp } from 'react-icons/io5'
+import { MapContainer, TileLayer, Polyline } from 'react-leaflet'
 import RecenterMap from './RecenterMap'
 import AttachCallbacksToMapEvents from './AttachCallbacksToMapEvents'
+import DraggableMarker from './DraggableMarker'
 
 // This component has no mutable state; it's completely dependant on it's props
 // Could just put in App.jsx but the file was starting to get a bit crowded and
 // this is a logical separation of concerns
-const Map = ({ panToCenter, panToZoom, waypoints, addWaypoint, deleteWaypoint, moveEnd, zoomEnd }) => (
+const Map = ({ panToCenter, panToZoom, waypoints, setWaypoints, addWaypoint, deleteWaypoint, moveEnd, zoomEnd }) => (
   <MapContainer center={{ lat: 43.31, lng: -1.98, }}
                 zoom={ 13 }
                 scrollWheelZoom={ false }
@@ -21,15 +21,12 @@ const Map = ({ panToCenter, panToZoom, waypoints, addWaypoint, deleteWaypoint, m
                                 moveEnd={ moveEnd }
                                 zoomEnd={ zoomEnd } />
     {waypoints.map((p, i) => (
-      <Marker key={ i } position={ p }>
-        <Popup>
-          <div style={{ textAlign: 'center' }}>
-            <button type='button' onClick={ () => deleteWaypoint(i) }>
-              <IoTrashSharp />
-            </button>
-          </div>
-        </Popup>
-      </Marker>
+      <DraggableMarker key={ i }
+                       index={ i }
+                       position={ p }
+                       waypoints={ waypoints }
+                       setWaypoints={ setWaypoints }
+                       deleteWaypoint={ deleteWaypoint } />
     ))}
     <Polyline positions={ waypoints } pathOptions={{ color: 'red' }}/>
   </MapContainer>

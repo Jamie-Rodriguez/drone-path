@@ -107,11 +107,11 @@ export const App = () => {
       <Map panToCenter={ panToCenter }
            panToZoom={ panToZoom }
            waypoints={ waypoints }
+           setWaypoints={ setWaypoints }
            addWaypoint={ addWaypoint }
            deleteWaypoint={ deleteWaypoint }
            moveEnd={ setCurrentCenter }
-           zoomEnd={ setCurrentZoom }
-           />
+           zoomEnd={ setCurrentZoom } />
     </div>
   )
 }
