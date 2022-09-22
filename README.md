@@ -1,5 +1,7 @@
 Have you always wanted to record, manage and visualise drone flight paths and just couldn't find an easy way to do it? Well, the search is over! Presenting *DronePath* (name is a work in progress) for all your drone flight path needs!
 
+![Amazing example image](sample-image.png)
+
 Features
 ========
 
